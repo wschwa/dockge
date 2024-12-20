@@ -164,7 +164,7 @@ Yes, you can.
 Dockge is built on top of [Compose V2](https://docs.docker.com/compose/migrate/). `compose.yaml`  also known as `docker-compose.yml`.
 
 `compose.yaml` file above is great if cloning and building locally, otherwise, you can use this `docker-compose.yml` file to run docker command:
-`docker compose up -d`:
+`docker compose up -d` just edit the approprite fields `[USER]`, `[CONFIG_LOCATION_FOR_DOCKGE]`, and `[PATH_TO_STACKS_DIRECTORY]`:
 ```
 services:
   dockge:
