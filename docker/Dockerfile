@@ -1,12 +1,12 @@
 ############################################
 # Healthcheck Binary
 ############################################
-FROM louislam/dockge:build-healthcheck AS build_healthcheck
+FROM cmcooper1980/dockge:build-healthcheck AS build_healthcheck
 
 ############################################
 # Build frontend
 ############################################
-FROM louislam/dockge:base AS build_frontend
+FROM cmcooper1980/dockge:base AS build_frontend
 WORKDIR /app
 COPY --chown=node:node . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 ############################################
 # Install node modules
 ############################################
-FROM louislam/dockge:base AS build_nodemodules
+FROM cmcooper1980/dockge:base AS build_nodemodules
 WORKDIR /app
 COPY --chown=node:node  ./package.json ./package.json
 COPY --chown=node:node  ./pnpm-lock.yaml ./pnpm-lock.yaml
@@ -25,7 +25,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 ############################################
 # ⭐ Main Image
 ############################################
-FROM louislam/dockge:base AS release
+FROM cmcooper1980/dockge:base AS release
 WORKDIR /app
 COPY --chown=node:node --from=build_healthcheck /app/extra/healthcheck /app/extra/healthcheck
 COPY --from=build_frontend /app/frontend-dist /app/frontend-dist
