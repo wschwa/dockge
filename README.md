@@ -162,3 +162,41 @@ Yes, you can.
 ## Others
 
 Dockge is built on top of [Compose V2](https://docs.docker.com/compose/migrate/). `compose.yaml`  also known as `docker-compose.yml`.
+
+`compose.yaml` file above is great if cloning and building locally, otherwise, you can use this `docker-compose.yml` file to run docker command:
+`docker compose up -d`:
+```
+services:
+  dockge:
+    image: cmcooper1980/dockge
+    container_name: dockge
+    restart: unless-stopped
+    environment:
+      # Tell Dockge where is your stacks directory
+      DOCKGE_STACKS_DIR: /opt/stacks
+    ports:
+      # Host Port : Container Port
+      - 5001:5001
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/[USER]/[CONFIG_LOCATION_FOR_DOCKGE]
+        target: /app/data
+        bind:
+          create_host_path: true
+      # If you want to use private registries, you need to share the auth file with Dockge:
+      # - /root/.docker/:/root/.docker
+
+      # Stacks Directory
+      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # ⚠️ 1. FULL path only. No relative path (MUST)
+      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      - type: bind
+        source: /home/[USER]/[PATH_TO_STACKS_DIRECTORY]
+        target: /opt/stacks
+        bind:
+          create_host_path: true`
