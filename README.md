@@ -212,4 +212,4 @@ services:
         source: /home/[USER]/[PATH_TO_STACKS_DIRECTORY]
         target: /opt/stacks
         bind:
-          create_host_path: true`
+          create_host_path: true
