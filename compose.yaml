@@ -1,6 +1,9 @@
 services:
   dockge:
-    image: louislam/dockge:1
+    image: cmcooper1980/dockge
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     restart: unless-stopped
     ports:
       # Host Port : Container Port
@@ -8,7 +11,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data:/app/data
-        
+
       # If you want to use private registries, you need to share the auth file with Dockge:
       # - /root/.docker/:/root/.docker
 

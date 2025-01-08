@@ -99,7 +99,7 @@
                                 <label for="name" class="form-label">{{ $t("dockgeAgent") }}</label>
                                 <select v-model="stack.endpoint" class="form-select">
                                     <option v-for="(agent, endpoint) in $root.agentList" :key="endpoint" :value="endpoint" :disabled="$root.agentStatusList[endpoint] != 'online'">
-                                        ({{ $root.agentStatusList[endpoint] }}) {{ (endpoint) ? endpoint : $t("currentEndpoint") }}
+                                        ({{ $root.agentStatusList[endpoint] }}) {{ (agent.name !== '') ? agent.name : agent.url || $t("Controller") }}
                                     </option>
                                 </select>
                             </div>
@@ -129,6 +129,10 @@
                             :is-edit-mode="isEditMode"
                             :first="name === Object.keys(jsonConfig.services)[0]"
                             :status="serviceStatusList[name]"
+                            :processing="processing"
+                            @start-service="startService"
+                            @stop-service="stopService"
+                            @restart-service="restartService"
                         />
                     </div>
 
@@ -786,6 +790,44 @@ export default {
             this.stack.name = this.stack?.name?.toLowerCase();
         },
 
+        startService(serviceName) {
+            this.processing = true;
+
+            this.$root.emitAgent(this.endpoint, "startService", this.stack.name, serviceName, (res) => {
+                this.processing = false;
+                this.$root.toastRes(res);
+
+                if (res.ok) {
+                    this.requestServiceStatus(); // Refresh service status
+                }
+            });
+        },
+
+        stopService(serviceName) {
+            this.processing = true;
+
+            this.$root.emitAgent(this.endpoint, "stopService", this.stack.name, serviceName, (res) => {
+                this.processing = false;
+                this.$root.toastRes(res);
+
+                if (res.ok) {
+                    this.requestServiceStatus(); // Refresh service status
+                }
+            });
+        },
+
+        restartService(serviceName) {
+            this.processing = true;
+
+            this.$root.emitAgent(this.endpoint, "restartService", this.stack.name, serviceName, (res) => {
+                this.processing = false;
+                this.$root.toastRes(res);
+
+                if (res.ok) {
+                    this.requestServiceStatus(); // Refresh service status
+                }
+            });
+        },
     }
 };
 </script>
@@ -800,9 +842,6 @@ export default {
 .editor-box {
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px;
-    &.edit-mode {
-        background-color: #2c2f38 !important;
-    }
 }
 
 .agent-name {

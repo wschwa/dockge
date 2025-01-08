@@ -30,6 +30,19 @@ View Video: https://youtu.be/AWAlOQeNpgU?t=48
 
 ![](https://github.com/louislam/dockge/assets/1336778/89fc1023-b069-42c0-a01c-918c495f1a6a)
 
+## ⭐ Pull Requests Merged:
+- PR #414: Set/Update Friendly Name (by https://github.com/lohrbini)
+- PR #438: Docker Compose Pull Skip Local Images (by https://github.com/vladaurosh)
+- PR #575: Theme Options Enabled in Settings (by https://github.com/CampaniaGuy)
+- PR #576: Add an Update All Button (by https://github.com/DomiiBunn)
+- PR #623: Added Support for Pasting Text in the Terminal (by https://github.com/lukasondrejka)
+- PR #634: Build Frontend During Docker Build (by https://github.com/Jamie-)
+- PR #637: Implement RIGHT and LEFT KEYS terminal navigation (by https://github.com/lukasondrejka)
+- PR #642: Remove Useless Scrollbar (by https://github.com/cyril59310)
+- PR #649: Add Container Control Buttons (by https://github.com/mizady)
+- PR #685: Preserve YAML Comments (by https://github.com/turnah)
+
+
 ## 🔧 How to Install
 
 Requirements:
@@ -162,3 +175,41 @@ Yes, you can.
 ## Others
 
 Dockge is built on top of [Compose V2](https://docs.docker.com/compose/migrate/). `compose.yaml`  also known as `docker-compose.yml`.
+
+`compose.yaml` file above is great if cloning and building locally, otherwise, you can use this `docker-compose.yml` file to run docker command:
+`docker compose up -d` just edit the approprite fields `[USER]`, `[CONFIG_LOCATION_FOR_DOCKGE]`, and `[PATH_TO_STACKS_DIRECTORY]`:
+```
+services:
+  dockge:
+    image: cmcooper1980/dockge
+    container_name: dockge
+    restart: unless-stopped
+    environment:
+      # Tell Dockge where is your stacks directory
+      DOCKGE_STACKS_DIR: /opt/stacks
+    ports:
+      # Host Port : Container Port
+      - 5001:5001
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/[USER]/[CONFIG_LOCATION_FOR_DOCKGE]
+        target: /app/data
+        bind:
+          create_host_path: true
+      # If you want to use private registries, you need to share the auth file with Dockge:
+      # - /root/.docker/:/root/.docker
+
+      # Stacks Directory
+      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # ⚠️ 1. FULL path only. No relative path (MUST)
+      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      - type: bind
+        source: /home/[USER]/[PATH_TO_STACKS_DIRECTORY]
+        target: /opt/stacks
+        bind:
+          create_host_path: true
